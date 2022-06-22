@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { db } from "../db.js";
 
 export async function postStatus(req, res) {
@@ -10,6 +11,11 @@ export async function postStatus(req, res) {
     );
 
     if (!isUserFromParticipantsList) {
+      console.log(
+        chalk.red("The user"),
+        chalk.red.bold(username),
+        chalk.red("is not listed!")
+      );
       return res.sendStatus(404);
     }
 

@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import { routes } from "./routes.js";
+import { handleInactiveUsers } from "./handleInactiveUsers.js";
 
 dotenv.config();
 
@@ -16,3 +17,5 @@ app.use(routes);
 app.listen(process.env.PORT, () => {
   console.log(chalk.bgGreen.black.bold("Server running on port 5000...\n"));
 });
+
+handleInactiveUsers();

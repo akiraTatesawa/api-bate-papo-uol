@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { db } from "../db.js";
 
-import { messageSchema } from "../validations.js";
+import { messageSchema } from "../validations/joiValidations.js";
 
 export async function postMessages(req, res) {
   const { error } = messageSchema.validate(req.body, { abortEarly: true });
@@ -47,7 +47,14 @@ export async function getMessages(req, res) {
 
     const messages = await db
       .collection("messages")
-      .find({ $or: [{ to: username }, { to: "Todos" }, { from: username }] })
+      .find({
+        $or: [
+          { to: username },
+          { to: "Todos" },
+          { from: username },
+          { type: "message" },
+        ],
+      })
       .toArray();
 
     messages.splice(0, messages.length - limit);

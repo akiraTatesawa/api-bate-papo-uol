@@ -2,7 +2,7 @@ import chalk from "chalk";
 import dayjs from "dayjs";
 
 import { db } from "../db.js";
-import { participantSchema } from "../validations.js";
+import { participantSchema } from "../validations/joiValidations.js";
 
 export async function postParticipants(req, res) {
   const { error } = participantSchema.validate(req.body);
@@ -38,6 +38,11 @@ export async function postParticipants(req, res) {
       time: dayjs().format("HH:mm:ss"),
     });
 
+    console.log(
+      chalk.green("User"),
+      chalk.green.bold(req.body.name),
+      chalk.green("successfully registered!")
+    );
     return res.sendStatus(201);
   } catch (err) {
     console.log(err);
