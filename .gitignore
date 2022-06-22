@@ -1,2 +1,6 @@
 ## Server Files
 node_modules/
+.env
+
+## Front-end Files
+web/

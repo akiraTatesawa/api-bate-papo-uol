@@ -1,16 +1,18 @@
 import express from "express";
 import chalk from "chalk";
 import cors from "cors";
+import dotenv from "dotenv";
 
 import { routes } from "./routes.js";
 
+dotenv.config();
+
 const app = express();
-const PORT = 5000;
 
 app.use(express.json());
 app.use(cors());
 app.use(routes);
 
-app.listen(PORT, () => {
-  console.log(chalk.bgGreen.black.bold("\nServer is running...\n"));
+app.listen(process.env.PORT, () => {
+  console.log(chalk.bgGreen.black.bold("Server running on port 5000...\n"));
 });
