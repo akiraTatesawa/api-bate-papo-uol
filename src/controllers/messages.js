@@ -16,14 +16,6 @@ export async function postMessages(req, res) {
   const messageFromUser = req.header("user");
 
   try {
-    const isFromParticipantsList = Boolean(
-      await db.collection("participants").findOne({ name: messageFromUser })
-    );
-
-    if (!isFromParticipantsList) {
-      return res.sendStatus(422);
-    }
-
     const message = {
       from: messageFromUser,
       ...req.body,

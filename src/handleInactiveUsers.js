@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import dayjs from "dayjs";
 
 import { db } from "./db.js";
@@ -13,9 +14,14 @@ export function handleInactiveUsers() {
         (user) => Date.now() - user.lastStatus > INACTIVITY_TIME
       );
 
+      if (inactiveUsers.length === 0) {
+        return;
+      }
+
       const inactiveUsersQuery = {
         lastStatus: { $lt: Date.now() - INACTIVITY_TIME },
       };
+
       await db.collection("participants").deleteMany(inactiveUsersQuery);
       await db.collection("messages").insertMany(
         inactiveUsers.map((user) => ({
@@ -27,7 +33,7 @@ export function handleInactiveUsers() {
         }))
       );
     } catch (err) {
-      console.log(err);
+      console.log(chalk.red.bold("Internal server error..."));
     }
   }, TIME_INTERVAL);
 }
