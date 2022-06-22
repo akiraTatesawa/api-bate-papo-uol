@@ -40,9 +40,18 @@ export async function postMessages(req, res) {
   }
 }
 
-export async function getMessages(_req, res) {
+export async function getMessages(req, res) {
   try {
-    const messages = await db.collection("messages").find().toArray();
+    const limit = parseInt(req.query.limit, 10) || Number.MAX_VALUE;
+    const username = req.header("user");
+
+    const messages = await db
+      .collection("messages")
+      .find({ $or: [{ to: username }, { to: "Todos" }, { from: username }] })
+      .toArray();
+
+    messages.splice(0, messages.length - limit);
+
     return res.send(messages);
   } catch (err) {
     console.log(err);
