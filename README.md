@@ -1,13 +1,14 @@
-# Chat UOL API
+![Chat UOL API](https://user-images.githubusercontent.com/102376051/175456539-50a511cd-12ca-4dcf-b0bd-cb4ac070ebea.png)
+
+# Chat UOL API ![Logo UOL](https://user-images.githubusercontent.com/102376051/175457159-98163138-eacd-46aa-923a-77ee5c4018f1.png)
 
 ## Table of contents
 
-- [Chat UOL API](#chat-uol-api)
-  - [Table of contents](#table-of-contents)
-  - [Project Description](#project-description)
-  - [Technologies](#technologies)
-  - [Status](#status)
-  - [Running the project](#running-the-project)
+ - [Table of contents](#table-of-contents)
+ - [Project Description](#project-description)
+ - [Technologies](#technologies)
+ - [Status](#status)
+ - [Running the project](#running-the-project)
 
 ## Project Description
 
@@ -34,19 +35,19 @@ My second back-end project proposed by the **Driven Education Bootcamp** is the 
 
 1. Clone the repository:
 
-    ```console
+    ```bash
     git clone https://github.com/akiraTatesawa/api-bate-papo-uol.git
     ```
 
 2. Navigate to the project directory:
 
-    ```console
+    ```bash
     cd api-bate-papo-uol
     ```
 
 3. Install the dependencies:
 
-    ```console
+    ```bash
     npm install
     ```
 
@@ -60,7 +61,7 @@ My second back-end project proposed by the **Driven Education Bootcamp** is the 
 
 5. Initialize mongodb:
 
-    ```console
+    ```bash
     mongod --dbpath ~/.mongo 
     ```
 
