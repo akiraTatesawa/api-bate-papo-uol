@@ -11,10 +11,11 @@ try {
 
   await mongoClient.connect();
   database = mongoClient.db(process.env.DATABASE_NAME);
+
   console.log(chalk.bold.green("\nConnected to the database..."));
 } catch (err) {
   console.log(err);
-  console.log(chalk.bold.red("\nFailed to connect to database"));
+  console.log(chalk.bold.red("\nFailed to connect to the database"));
 }
 
 export const db = database;

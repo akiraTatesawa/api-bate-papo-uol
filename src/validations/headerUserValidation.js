@@ -17,11 +17,11 @@ export async function validateUserHeader(req, res, next) {
   if (!isUsernameInParticipantsList) {
     console.log(
       chalk.red(
-        `User ${chalk.bold.red(username)} is not in the participants list`
+        `User ${chalk.bold.red(username)} is not on the participants list`
       )
     );
 
-    return res.sendStatus(422);
+    return res.sendStatus(404);
   }
 
   return next();

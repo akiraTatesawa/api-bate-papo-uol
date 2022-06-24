@@ -23,6 +23,7 @@ export function handleInactiveUsers() {
       };
 
       await db.collection("participants").deleteMany(inactiveUsersQuery);
+
       await db.collection("messages").insertMany(
         inactiveUsers.map((user) => ({
           from: user.name,
