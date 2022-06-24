@@ -65,7 +65,6 @@ export async function deleteMessages(req, res) {
   const filter = { _id: new ObjectId(idMessage) };
 
   try {
-    // A mensagem existe ?
     const message = await db.collection("messages").findOne(filter);
 
     if (!message) {
@@ -73,7 +72,6 @@ export async function deleteMessages(req, res) {
       return res.sendStatus(404);
     }
 
-    // Quem faz a requisição é o autor da mensagem?
     const isTheMessageAutor = message.from === username;
 
     if (!isTheMessageAutor) {
@@ -83,6 +81,50 @@ export async function deleteMessages(req, res) {
     await db.collection("messages").deleteOne(filter);
 
     console.log(chalk.green("Message deleted successfully"));
+    return res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
+}
+
+export async function putMessages(req, res) {
+  const { error } = messageSchema.validate(req.body, { abortEarly: true });
+
+  if (error) {
+    console.log(error.details);
+    return res.sendStatus(422);
+  }
+
+  const messageFromUser = req.header("user");
+  const { idMessage } = req.params;
+
+  const filter = { _id: new ObjectId(idMessage) };
+  const updatedMessage = {
+    $set: {
+      from: messageFromUser,
+      ...req.body,
+      time: dayjs().format("HH:mm:ss"),
+    },
+  };
+
+  try {
+    const message = await db.collection("messages").findOne(filter);
+
+    if (!message) {
+      console.log(chalk.red("Message not found"));
+      return res.sendStatus(404);
+    }
+
+    const isTheMessageAutor = message.from === messageFromUser;
+
+    if (!isTheMessageAutor) {
+      return res.sendStatus(401);
+    }
+
+    await db.collection("messages").updateOne(filter, updatedMessage);
+
+    console.log(chalk.green("Message edited successfully"));
     return res.sendStatus(200);
   } catch (err) {
     console.log(err);
