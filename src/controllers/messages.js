@@ -1,25 +1,34 @@
 import chalk from "chalk";
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
+// eslint-disable-next-line import/no-unresolved
+import { stripHtml } from "string-strip-html";
 
 import { db } from "../db.js";
 
 import { messageSchema } from "../validations/joiValidations.js";
 
 export async function postMessages(req, res) {
-  const { error } = messageSchema.validate(req.body, { abortEarly: true });
+  const messageFromReq = {
+    ...req.body,
+    text: stripHtml(req.body.text).result.trim(),
+  };
+
+  const { error } = messageSchema.validate(messageFromReq, {
+    abortEarly: true,
+  });
 
   if (error) {
     console.log(error.details);
     return res.sendStatus(422);
   }
 
-  const messageFromUser = req.header("user");
+  const messageAuthor = req.header("user");
 
   try {
     const message = {
-      from: messageFromUser,
-      ...req.body,
+      from: messageAuthor,
+      ...messageFromReq,
       time: dayjs().format("HH:mm:ss"),
     };
 
@@ -89,21 +98,28 @@ export async function deleteMessages(req, res) {
 }
 
 export async function putMessages(req, res) {
-  const { error } = messageSchema.validate(req.body, { abortEarly: true });
+  const messageFromReq = {
+    ...req.body,
+    text: stripHtml(req.body.text).result.trim(),
+  };
+
+  const { error } = messageSchema.validate(messageFromReq, {
+    abortEarly: true,
+  });
 
   if (error) {
     console.log(error.details);
     return res.sendStatus(422);
   }
 
-  const messageFromUser = req.header("user");
+  const messageAuthor = req.header("user");
   const { idMessage } = req.params;
 
   const filter = { _id: new ObjectId(idMessage) };
   const updatedMessage = {
     $set: {
-      from: messageFromUser,
-      ...req.body,
+      from: messageAuthor,
+      ...messageFromReq,
       time: dayjs().format("HH:mm:ss"),
     },
   };
@@ -116,7 +132,7 @@ export async function putMessages(req, res) {
       return res.sendStatus(404);
     }
 
-    const isTheMessageAutor = message.from === messageFromUser;
+    const isTheMessageAutor = message.from === messageAuthor;
 
     if (!isTheMessageAutor) {
       return res.sendStatus(401);

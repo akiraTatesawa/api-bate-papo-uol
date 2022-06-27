@@ -1,25 +1,32 @@
 import chalk from "chalk";
 import dayjs from "dayjs";
+// eslint-disable-next-line import/no-unresolved
+import { stripHtml } from "string-strip-html";
 
 import { db } from "../db.js";
+
 import { participantSchema } from "../validations/joiValidations.js";
 
 export async function postParticipants(req, res) {
-  const { error } = participantSchema.validate(req.body);
+  const newUser = { name: stripHtml(req.body.name).result.trim() };
+  const { error } = participantSchema.validate(newUser);
 
   if (error) {
+    console.log(error.details);
     return res.sendStatus(422);
   }
 
   try {
+    const { name: username } = newUser;
+
     const isUsernameBeingUsed = Boolean(
-      await db.collection("participants").findOne({ name: req.body.name })
+      await db.collection("participants").findOne(newUser)
     );
 
     if (isUsernameBeingUsed) {
       console.log(
         chalk.red("The username"),
-        chalk.red.bold(req.body.name),
+        chalk.red.bold(username),
         chalk.red("is already being used!")
       );
 
@@ -28,10 +35,10 @@ export async function postParticipants(req, res) {
 
     await db
       .collection("participants")
-      .insertOne({ ...req.body, lastStatus: Date.now() });
+      .insertOne({ ...newUser, lastStatus: Date.now() });
 
     await db.collection("messages").insertOne({
-      from: req.body.name,
+      from: username,
       to: "Todos",
       text: "entra na sala...",
       type: "status",
@@ -40,7 +47,7 @@ export async function postParticipants(req, res) {
 
     console.log(
       chalk.green("User"),
-      chalk.green.bold(req.body.name),
+      chalk.green.bold(username),
       chalk.green("successfully registered!")
     );
     return res.sendStatus(201);
